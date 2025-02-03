@@ -1,0 +1,24 @@
+services:
+  proxy:
+    image: ghcr.io/ke126/potato-proxy:latest
+    environment:
+      PORT: 3000
+      PROXY_URL: your-service:4000
+    ports:
+      - 3000:3000
+    networks:
+      - proxy-net
+      - isolated
+
+  your-service:
+    # assume your-service is running internally on port 4000
+    image: your-service-here
+    networks:
+      - isolated
+
+networks:
+  proxy-net:
+    driver: bridge
+  isolated:
+    driver: bridge
+    internal: true
