@@ -33,8 +33,14 @@ func main() {
 
 	proxy := &httputil.ReverseProxy{
 		Rewrite: func(r *httputil.ProxyRequest) {
+			r.SetXForwarded()
 			r.SetURL(target)
-			// r.Out.Host = r.In.Host
+
+			// for some reason, r.SetURL always sets the Host to ""
+			// so we will set it manually here
+			if r.Out.Host == "" {
+				r.Out.Host = target.Host
+			}
 		},
 	}
 
