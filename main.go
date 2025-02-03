@@ -26,12 +26,18 @@ func main() {
 		PROXY_URL = "http://" + PROXY_URL
 	}
 
-	u, err := url.Parse(PROXY_URL)
+	target, err := url.Parse(PROXY_URL)
 	if err != nil {
 		log.Fatal("Potato Proxy: Error parsing PROXY_URL")
 	}
 
-	proxy := httputil.NewSingleHostReverseProxy(u)
+	proxy := &httputil.ReverseProxy{
+		Rewrite: func(r *httputil.ProxyRequest) {
+			r.SetURL(target)
+			// r.Out.Host = r.In.Host
+		},
+	}
+
 	logger := slog.Default()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		logger.Info(r.Method + " " + r.URL.String())
