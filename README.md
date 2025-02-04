@@ -6,10 +6,10 @@ An extremely simple HTTP reverse proxy in Go. Useful for proxying containers whi
 
 The following two environment variables are required:
 
-| Variable  | Description           | Example      |
-| --------- | --------------------- | ------------ |
-| PORT      | The port to listen on | 3000         |
-| PROXY_URL | The URL to proxy      | service:4000 |
+| Variable   | Description                       | Example          |
+| ---------- | --------------------------------- | ---------------- |
+| PORT       | The port to listen on             | 3000             |
+| PROXY_HOST | The `hostname:port` pair to proxy | web-service:4000 |
 
 Pull the Docker image:
 
@@ -17,4 +17,10 @@ Pull the Docker image:
 docker pull ghcr.io/ke126/potato-proxy:latest
 ```
 
-See [compose.yaml](./compose.yaml) for an example of how to use Potato Proxy.
+Run the Docker image:
+
+```bash
+docker run -p 3000:3000 -e PORT=3000 -e PROXY_HOST=web-service:4000 ghcr.io/ke126/potato-proxy:latest
+```
+
+See [compose.yaml](./compose.yaml) for a full example of how to use Potato Proxy.
