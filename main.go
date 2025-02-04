@@ -1,14 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
-	"strings"
 )
 
 func main() {
@@ -17,18 +15,14 @@ func main() {
 		log.Fatal("Potato Proxy: PORT is unset")
 	}
 
-	PROXY_URL := os.Getenv("PROXY_URL")
-	if PROXY_URL == "" {
-		log.Fatal("Potato Proxy: PROXY_URL is unset")
+	PROXY_HOST := os.Getenv("PROXY_HOST")
+	if PROXY_HOST == "" {
+		log.Fatal("Potato Proxy: PROXY_HOST is unset")
 	}
 
-	if !strings.HasPrefix(PROXY_URL, "http://") {
-		PROXY_URL = "http://" + PROXY_URL
-	}
-
-	target, err := url.Parse(PROXY_URL)
-	if err != nil {
-		log.Fatal("Potato Proxy: Error parsing PROXY_URL")
+	target := &url.URL{
+		Scheme: "http",
+		Host:   PROXY_HOST,
 	}
 
 	proxy := &httputil.ReverseProxy{
@@ -36,11 +30,8 @@ func main() {
 			r.SetXForwarded()
 			r.SetURL(target)
 
-			// for some reason, r.SetURL always sets the Host to ""
-			// so we will set it manually here
-			if r.Out.Host == "" {
-				r.Out.Host = target.Host
-			}
+			// preserve the original host
+			r.Out.Host = r.In.Host
 		},
 	}
 
@@ -50,6 +41,6 @@ func main() {
 		proxy.ServeHTTP(w, r)
 	})
 
-	fmt.Println("Potato Proxy: Listening on port", PORT)
+	logger.Info("Listening on port " + PORT)
 	http.ListenAndServe(":"+PORT, nil)
 }
