@@ -1,8 +1,8 @@
 # Potato Proxy
 
-An extremely simple HTTP reverse proxy in Go. Useful for proxying containers which you do not want to expose to the external network.
+An extremely simple L7 HTTP reverse proxy written in Go. Useful for proxying containers which you do not want to expose to the external network.
 
-## How to use
+## Getting started
 
 The following two environment variables are required:
 

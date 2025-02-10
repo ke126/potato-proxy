@@ -11,7 +11,7 @@ services:
       - isolated
 
   web-service:
-    image: # your image here
+    image: something # your image here
     networks:
       - isolated
 
